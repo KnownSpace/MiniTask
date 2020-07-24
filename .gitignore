@@ -14,6 +14,6 @@ gradle-app.setting
 # gradle/wrapper/gradle-wrapper.properties
 
 #VS Code
-./vscode
+.vscode
 # Ignore Gradle build output directory
 build
