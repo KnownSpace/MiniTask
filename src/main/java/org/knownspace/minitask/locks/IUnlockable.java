@@ -1,5 +1,5 @@
 package org.knownspace.minitask.locks;
 
-public interface Unlockable {
+public interface IUnlockable {
     public void unlock();
 }

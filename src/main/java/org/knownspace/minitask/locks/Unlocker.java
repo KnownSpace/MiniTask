@@ -1,7 +1,7 @@
 package org.knownspace.minitask.locks;
 
 //never use to copy
-public class Unlocker<Lock extends Unlockable> implements AutoCloseable {
+public class Unlocker<Lock extends IUnlockable> implements AutoCloseable {
 
     Lock _lock;
 

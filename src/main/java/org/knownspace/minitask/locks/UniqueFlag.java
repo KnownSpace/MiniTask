@@ -9,7 +9,7 @@ import org.knownspace.minitask.ITask;
 import org.knownspace.minitask.ITaskCompletionEvent;
 import org.knownspace.minitask.TaskCompletionEvent;
 
-public class UniqueFlag implements Unlockable {
+public class UniqueFlag implements IUnlockable {
 
     private SpinLock _lock;
 

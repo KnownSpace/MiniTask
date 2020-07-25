@@ -2,7 +2,7 @@ package org.knownspace.minitask.locks;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class SpinLock implements Unlockable {
+public class SpinLock implements IUnlockable {
     private AtomicBoolean _locked;
 
     public SpinLock()
