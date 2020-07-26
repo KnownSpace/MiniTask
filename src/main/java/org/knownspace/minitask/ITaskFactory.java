@@ -2,6 +2,8 @@ package org.knownspace.minitask;
 
 import java.util.function.Supplier;
 
+import org.knownspace.minitask.locks.ReadWriteFlag;
+import org.knownspace.minitask.locks.SharedFlag;
 import org.knownspace.minitask.locks.UniqueFlag;
 
 public interface ITaskFactory {
@@ -10,4 +12,10 @@ public interface ITaskFactory {
     public ITask<Void> startTask(Runnable fn);
 
     public UniqueFlag makeUniqueFlag();
+
+    public <Result> ITaskCompletionEvent<Result> makeCompletionEvent();
+
+    public SharedFlag makeSharedFlag(int count);
+
+    public ReadWriteFlag makeReadWriteFlag();
 }
