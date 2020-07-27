@@ -2,7 +2,7 @@
 
 A simple Java task library
 
-[![](https://www.jitpack.io/v/KnownSpace/MiniTask.svg)](https://www.jitpack.io/#KnownSpace/MiniTask)
+[![JIT Pack](https://www.jitpack.io/v/KnownSpace/MiniTask.svg)](https://www.jitpack.io/#KnownSpace/MiniTask)
 
 ## Build
 
