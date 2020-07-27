@@ -1,15 +1,15 @@
 package org.knownspace.minitask;
 
-import java.util.function.Supplier;
-
+import org.knownspace.minitask.functions.Callback;
+import org.knownspace.minitask.functions.Provider;
 import org.knownspace.minitask.locks.ReadWriteFlag;
 import org.knownspace.minitask.locks.SharedFlag;
 import org.knownspace.minitask.locks.UniqueFlag;
 
 public interface ITaskFactory {
-    public <Result> ITask<Result> startTask(Supplier<Result> fn);
+    public <Result> ITask<Result> startTask(Provider<Result> fn);
 
-    public ITask<Void> startTask(Runnable fn);
+    public ITask<Void> startTask(Callback fn);
 
     public UniqueFlag makeUniqueFlag();
 

@@ -1,8 +1,9 @@
 package org.knownspace.minitask;
 
 import java.util.concurrent.ExecutorService;
-import java.util.function.Supplier;
 
+import org.knownspace.minitask.functions.Callback;
+import org.knownspace.minitask.functions.Provider;
 import org.knownspace.minitask.locks.ReadWriteFlag;
 import org.knownspace.minitask.locks.SharedFlag;
 import org.knownspace.minitask.locks.UniqueFlag;
@@ -21,14 +22,14 @@ public class TaskFactory implements ITaskFactory {
     }
 
     @Override
-    public <Result> ITask<Result> startTask(Supplier<Result> fn) {
+    public <Result> ITask<Result> startTask(Provider<Result> fn) {
         ITask<Result> task = new Task<>(_executor, fn);
         task.run();
         return task;
     }
 
     @Override
-    public ITask<Void> startTask(Runnable fn) {
+    public ITask<Void> startTask(Callback fn) {
         ITask<Void> task = new Task<>(_executor, fn);
         task.run();
         return task;

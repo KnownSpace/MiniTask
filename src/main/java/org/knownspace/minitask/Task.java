@@ -4,30 +4,31 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
-import java.util.function.Function;
+import org.knownspace.minitask.functions.Callable;
+import org.knownspace.minitask.functions.Callback;
+import org.knownspace.minitask.functions.Provider;
+import org.knownspace.minitask.functions.Consumer;
 
 public class Task<Result> implements ITask<Result> {
 
     private ExecutorService _executor;
 
-    private Supplier<Result> _fn;
+    private Provider<Result> _fn;
 
     private CompletableFuture<Result> _future;
 
-    public Task(ExecutorService executor, Supplier<Result> fn) {
+    public Task(ExecutorService executor, Provider<Result> fn) {
         this(executor, fn, new CompletableFuture<>());
     }
 
-    public Task(ExecutorService executor,Runnable fn){
+    public Task(ExecutorService executor,Callback fn){
         this(executor,()->{ 
-            fn.run();
+            fn.call();
             return null;},new CompletableFuture<>());
     }
 
-    private Task(ExecutorService executor, Supplier<Result> fn, CompletableFuture<Result> future) {
+    private Task(ExecutorService executor, Provider<Result> fn, CompletableFuture<Result> future) {
         _executor = executor;
         _fn = fn;
         _future = future;
@@ -42,7 +43,7 @@ public class Task<Result> implements ITask<Result> {
         }
         _executor.execute(() -> {
             try {
-                Result result = _fn.get();
+                Result result = _fn.provide();
                 _future.complete(result);
             } catch (Exception e) {
                 _future.completeExceptionally(e);
@@ -57,21 +58,45 @@ public class Task<Result> implements ITask<Result> {
 
     @Override
     public ITask<Void> then(Consumer<Result> next) {
-        CompletableFuture<Void> future = _future.thenAcceptAsync(next,_executor);
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        _future.thenAcceptAsync((arg)->{
+            try {
+                next.call(arg);
+                future.complete(Helper.voidValue);
+            } catch (Exception e) {
+                future.completeExceptionally(e);
+            }
+        },_executor);
         ITask<Void> task = new Task<Void>(_executor,null,future);
         return task;
     }
 
     @Override
-    public <NewResult> ITask<NewResult> then(Function<Result, NewResult> next) {
-        CompletableFuture<NewResult> future = _future.thenApplyAsync(next,_executor);
+    public <NewResult> ITask<NewResult> then(Callable<NewResult,Result> next) {
+        CompletableFuture<NewResult> future = new CompletableFuture<>();
+        _future.thenAcceptAsync((arg)->{
+            try {
+                NewResult r = next.call(arg);
+                future.complete(r);
+            } catch (Exception e) {
+                future.completeExceptionally(e);
+            }
+        },_executor);
         ITask<NewResult> task = new Task<NewResult>(_executor,null,future);
         return task;
     }
 
     @Override
-    public ITask<Void> then(Runnable runnable) {
-       CompletableFuture<Void> future = _future.thenRunAsync(runnable,_executor);
+    public ITask<Void> then(Callback runnable) {
+       CompletableFuture<Void> future =  new CompletableFuture<>();
+       _future.thenRunAsync(()->{
+           try {
+               runnable.call();
+               future.complete(Helper.voidValue);
+           } catch (Exception e) {
+               future.completeExceptionally(e);
+           }
+       },_executor);
        ITask<Void> task = new Task<Void>(_executor,null,future);
         return task;
     }
@@ -80,7 +105,7 @@ public class Task<Result> implements ITask<Result> {
     public ITask<Void> thenWithException(Consumer<Future<Result>> next) {
         CompletableFuture<Result> result_future = new CompletableFuture<>();
         ITask<Void> task = new Task<>(_executor,()->{
-            next.accept(result_future);
+            next.call(result_future);
             return null;
         });
         Consumer<Result> consumer = (r)->
@@ -88,7 +113,11 @@ public class Task<Result> implements ITask<Result> {
             result_future.complete(r);
             task.run();
         };
-        _future.thenAcceptAsync(consumer,_executor);
+        _future.thenAcceptAsync((arg)->{
+            try {
+                consumer.call(arg);
+            } catch (Exception ignore) {}
+        },_executor);
         _future.exceptionally((ex)->{
             result_future.completeExceptionally(ex);
             task.run();
@@ -98,18 +127,21 @@ public class Task<Result> implements ITask<Result> {
     }
 
     @Override
-    public <NewResult> ITask<NewResult> thenWithException(Function<Future<Result>, NewResult> next) {
+    public <NewResult> ITask<NewResult> thenWithException(Callable<NewResult,Future<Result>> next) {
         CompletableFuture<Result> result_future = new CompletableFuture<>();
         ITask<NewResult> task = new Task<>(_executor,()->{
-            
-            return next.apply(result_future);
+            return next.call(result_future);
         });
         Consumer<Result> consumer = (r)->
         {
             result_future.complete(r);
             task.run();
         };
-        _future.thenAcceptAsync(consumer,_executor);
+        _future.thenAcceptAsync((arg)->{
+            try {
+                consumer.call(arg);
+            } catch (Exception ignore) {}
+        },_executor);
         _future.exceptionally((ex)->{
             result_future.completeExceptionally(ex);
             task.run();
@@ -139,9 +171,15 @@ public class Task<Result> implements ITask<Result> {
     }
 
     @Override
-    public <NewResult> ITask<NewResult> then(Supplier<NewResult> next) {
-        CompletableFuture<NewResult> future = _future.thenApplyAsync((ignore)->{
-            return next.get();
+    public <NewResult> ITask<NewResult> then(Provider<NewResult> next) {
+        CompletableFuture<NewResult> future = new CompletableFuture<>();
+        _future.thenAcceptAsync((ignore)->{
+            try {
+                NewResult r = next.provide();
+                future.complete(r);
+            } catch (Exception e) {
+                future.completeExceptionally(e);
+            }
         },_executor);
         ITask<NewResult> task = new Task<NewResult>(_executor,null,future);
         return task;
