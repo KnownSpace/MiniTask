@@ -1,21 +1,28 @@
 package org.knownspace.minitask.locks;
 
 //never use to copy
+//只在try-with-resource使用它
+//且不能用于传递引用
+//RAII解锁器
 public class Unlocker<Lock extends IUnlockable> implements AutoCloseable {
 
-    Lock _lock;
+    //实现Unlockable的锁
+    private Lock _lock;
 
-    boolean _locked;
+    //指示是否锁定
+    private boolean _locked;
 
     public Unlocker(Lock lock) {
         _lock = lock;
         _locked = true;
     }
 
+    //取消操作
     public void cancel() {
         _locked = false;
     }
 
+    //手动解锁
     public void unlock() {
         try {
             close();
@@ -24,6 +31,7 @@ public class Unlocker<Lock extends IUnlockable> implements AutoCloseable {
         }
     }
 
+    //重设
     public void reset() {
         _locked = true;
     }

@@ -91,6 +91,7 @@ public class ReadWriteFlag implements IUnlockable {
                     List<ITaskCompletionEvent<Void>> tmp = waits;
                     waits = _waitReaders;
                     _waitReaders = tmp;
+                    _readerRef += waits.size();
                     _state = ReadWriteFlagState.READ;
                     raiiUnlocker.unlock();
                     for (ITaskCompletionEvent<Void> ce : waits) {
