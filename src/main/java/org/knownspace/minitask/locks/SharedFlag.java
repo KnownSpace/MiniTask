@@ -12,7 +12,7 @@ import org.knownspace.minitask.TaskCompletionEvent;
 
 public class SharedFlag implements IUnlockable {
 
-    private int _count;
+    private volatile int _count;
 
     private List<ITaskCompletionEvent<Void>> _waits;
 

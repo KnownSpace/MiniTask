@@ -41,6 +41,7 @@ public class Unlocker<Lock extends IUnlockable> implements AutoCloseable {
         if(_locked)
         {
             _lock.unlock();
+            _locked = false;
         }
     }
 }
