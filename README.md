@@ -4,6 +4,8 @@ A simple Java task library
 
 [![JIT Pack](https://www.jitpack.io/v/KnownSpace/MiniTask.svg)](https://www.jitpack.io/#KnownSpace/MiniTask)
 
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/babc84731815428eb9c25f6ff6363b17)](https://www.codacy.com/gh/KnownSpace/MiniTask?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=KnownSpace/MiniTask&amp;utm_campaign=Badge_Grade)
+
 ## Build
 
 ```bash
