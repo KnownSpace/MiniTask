@@ -18,9 +18,20 @@ group 'org.knownspace.minitask'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+allprojects {
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+
+
 repositories {
     // Use jcenter for resolving dependencies.
     // You can declare any Maven/Ivy/file repository here.
+
     jcenter()
 }
 
@@ -33,4 +44,8 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
+}
+
+tasks.withType(JavaCompile) {  
+    options.encoding = "UTF-8"  
 }
