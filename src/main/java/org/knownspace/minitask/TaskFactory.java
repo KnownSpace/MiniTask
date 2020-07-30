@@ -49,4 +49,25 @@ public class TaskFactory implements ITaskFactory {
     public ReadWriteFlag makeReadWriteFlag() {
         return new ReadWriteFlag(_executor);
     }
+
+    @Override
+    public ITask<Void> complete() {
+        ITaskCompletionEvent<Void> ce = new TaskCompletionEvent<>(_executor);
+        ce.complete(Helper.voidValue);
+        return ce.getTask();
+    }
+
+    @Override
+    public <Result> ITask<Result> complete(Result result) {
+        ITaskCompletionEvent<Result> ce = new TaskCompletionEvent<>(_executor);
+        ce.complete(result);
+        return ce.getTask();
+    }
+
+    @Override
+    public <Result> ITask<Result> fromException(Exception exception) {
+        ITaskCompletionEvent<Result> ce = new TaskCompletionEvent<>(_executor);
+        ce.complete(exception);
+        return ce.getTask();
+    }
 }

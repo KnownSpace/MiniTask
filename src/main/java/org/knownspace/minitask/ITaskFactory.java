@@ -18,4 +18,10 @@ public interface ITaskFactory {
     public SharedFlag makeSharedFlag(int count);
 
     public ReadWriteFlag makeReadWriteFlag();
+
+    public ITask<Void> complete();
+
+    public <Result> ITask<Result> complete(Result result);
+
+    public <Result> ITask<Result> fromException(Exception exception);
 }
