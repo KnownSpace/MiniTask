@@ -62,7 +62,7 @@ public class Task<Result> implements ITask<Result> {
         _future.thenAcceptAsync((arg)->{
             try {
                 next.call(arg);
-                future.complete(Helper.voidValue);
+                future.complete(TaskHelper.voidValue);
             } catch (Exception e) {
                 future.completeExceptionally(e);
             }
@@ -92,7 +92,7 @@ public class Task<Result> implements ITask<Result> {
        _future.thenRunAsync(()->{
            try {
                runnable.call();
-               future.complete(Helper.voidValue);
+               future.complete(TaskHelper.voidValue);
            } catch (Exception e) {
                future.completeExceptionally(e);
            }

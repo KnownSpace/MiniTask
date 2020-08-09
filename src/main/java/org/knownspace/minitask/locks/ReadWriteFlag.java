@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-import org.knownspace.minitask.Helper;
+import org.knownspace.minitask.TaskHelper;
 import org.knownspace.minitask.ITask;
 import org.knownspace.minitask.ITaskCompletionEvent;
 import org.knownspace.minitask.TaskCompletionEvent;
@@ -40,7 +40,7 @@ public class ReadWriteFlag implements IUnlockable {
                 _state = ReadWriteFlagState.READ;
                 _readerRef += 1;
                 raiiUnlocker.unlock();
-                ce.complete(Helper.voidValue);
+                ce.complete(TaskHelper.voidValue);
             } else {
                 _waitReaders.add(ce);
             }
@@ -55,7 +55,7 @@ public class ReadWriteFlag implements IUnlockable {
             if(_state == ReadWriteFlagState.FREE) {
                 _state = ReadWriteFlagState.WRITE;
                 raiiUnlocker.unlock();
-                ce.complete(Helper.voidValue);
+                ce.complete(TaskHelper.voidValue);
             } else {
                 _waitWriters.add(ce);
             }
@@ -75,7 +75,7 @@ public class ReadWriteFlag implements IUnlockable {
                         ITaskCompletionEvent<Void> ce = _waitWriters.get(0);
                         _waitWriters.remove(0);
                         raiiUnlocker.unlock();
-                        ce.complete(Helper.voidValue);
+                        ce.complete(TaskHelper.voidValue);
                     } else {
                         _state = ReadWriteFlagState.FREE;
                     }
@@ -85,7 +85,7 @@ public class ReadWriteFlag implements IUnlockable {
                     ITaskCompletionEvent<Void> ce = _waitWriters.get(0);
                     _waitWriters.remove(0);
                     raiiUnlocker.unlock();
-                    ce.complete(Helper.voidValue);
+                    ce.complete(TaskHelper.voidValue);
                 } else if(!_waitReaders.isEmpty()) {
                     List<ITaskCompletionEvent<Void>> waits = new LinkedList<>();
                     List<ITaskCompletionEvent<Void>> tmp = waits;
@@ -95,7 +95,7 @@ public class ReadWriteFlag implements IUnlockable {
                     _state = ReadWriteFlagState.READ;
                     raiiUnlocker.unlock();
                     for (ITaskCompletionEvent<Void> ce : waits) {
-                        ce.complete(Helper.voidValue);
+                        ce.complete(TaskHelper.voidValue);
                     }
                 } else {
                     _state = ReadWriteFlagState.FREE;

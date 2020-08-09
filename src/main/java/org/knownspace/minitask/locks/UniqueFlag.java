@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-import org.knownspace.minitask.Helper;
+import org.knownspace.minitask.TaskHelper;
 import org.knownspace.minitask.ITask;
 import org.knownspace.minitask.ITaskCompletionEvent;
 import org.knownspace.minitask.TaskCompletionEvent;
@@ -50,7 +50,7 @@ public class UniqueFlag implements IUnlockable {
                 //提前解锁
                 raiiUnlocker.unlock();
                 //进行通知
-                ce.complete(Helper.voidValue);
+                ce.complete(TaskHelper.voidValue);
             } else {
                 //已被锁定
                 //加入等待队列
@@ -79,7 +79,7 @@ public class UniqueFlag implements IUnlockable {
                 //提前解锁
                 raiiUnlocker.unlock();
                 //进行通知
-                ce.complete(Helper.voidValue);
+                ce.complete(TaskHelper.voidValue);
             }
         } catch (Exception ignore) {}
     }

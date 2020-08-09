@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-import org.knownspace.minitask.Helper;
+import org.knownspace.minitask.TaskHelper;
 import org.knownspace.minitask.ITask;
 
 import org.knownspace.minitask.ITaskCompletionEvent;
@@ -37,7 +37,7 @@ public class SharedFlag implements IUnlockable {
             if(_count  > 0) {
                 _count -=1;
                 raiiUnLocker.unlock();
-                ce.complete(Helper.voidValue);
+                ce.complete(TaskHelper.voidValue);
             } else {
                 _waits.add(ce);
             }
@@ -57,7 +57,7 @@ public class SharedFlag implements IUnlockable {
             ITaskCompletionEvent<Void> ce = _waits.get(0);
             _waits.remove(0);
             raiiUnlocker.unlock();
-            ce.complete(Helper.voidValue);
+            ce.complete(TaskHelper.voidValue);
         } catch (Exception ignore) {}
     }
     

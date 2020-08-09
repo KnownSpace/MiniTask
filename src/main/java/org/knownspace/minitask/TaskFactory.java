@@ -53,7 +53,7 @@ public class TaskFactory implements ITaskFactory {
     @Override
     public ITask<Void> complete() {
         ITaskCompletionEvent<Void> ce = new TaskCompletionEvent<>(_executor);
-        ce.complete(Helper.voidValue);
+        ce.complete(TaskHelper.voidValue);
         return ce.getTask();
     }
 
